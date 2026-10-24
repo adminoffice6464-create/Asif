@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Royal Barber Shop - Mobile Online Booking</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#FF6B00',
+                            orangeLight: '#FF8533',
+                            green: '#00C853',
+                            greenLight: '#26E170',
+                            pink: '#FF007F',
+                            pinkLight: '#FF3399',
+                            dark: '#0D0E12',
+                            card: '#161820',
+                            cardLight: '#202330',
+                            border: '#2C3042'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #08090C;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0D0E12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2C3042;
+            border-radius: 4px;
+        }
+        .orange-glow {
+            box-shadow: 0 0 20px rgba(255, 107, 0, 0.25);
+        }
+        .pink-glow {
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.25);
+        }
+        .green-glow {
+            box-shadow: 0 0 20px rgba(0, 200, 83, 0.25);
+        }
+        .tri-gradient-text {
+            background: linear-gradient(135deg, #FF6B00 0%, #FF007F 50%, #00C853 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .tri-button-gradient {
+            background: linear-gradient(135deg, #FF6B00 0%, #FF007F 100%);
+        }
+        .tri-button-gradient:hover {
+            background: linear-gradient(135deg, #FF8533 0%, #FF3399 100%);
+        }
+        .green-button-gradient {
+            background: linear-gradient(135deg, #00C853 0%, #009624 100%);
+        }
+        .barber-pole-stripe {
+            background: repeating-linear-gradient(
+                45deg,
+                #FF6B00,
+                #FF6B00 10px,
+                #FF007F 10px,
+                #FF007F 20px,
+                #00C853 20px,
+                #00C853 30px
+            );
+            background-size: 200% 200%;
+            animation: barberPole 6s linear infinite;
+        }
+        @keyframes barberPole {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen p-0 sm:p-4 text-gray-100">
+
+    <!-- App Container Frame -->
+    <div class="w-full max-w-md h-screen sm:h-[890px] bg-brand-dark sm:rounded-[38px] shadow-[0_0_60px_rgba(255,0,127,0.15)] border-0 sm:border-[5px] border-brand-border flex flex-col overflow-hidden relative">
+
+        <!-- Top Navigation Header -->
+        <header class="bg-gradient-to-r from-brand-card via-brand-cardLight to-brand-card px-5 pt-5 pb-4 border-b border-brand-border relative z-10 shrink-0 shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full barber-pole-stripe p-[2px] shadow-md">
+                        <div class="w-full h-full bg-brand-dark rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-scissors text-brand-orange text-base"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-base font-extrabold font-display tracking-wider text-white leading-tight tri-gradient-text">ROYAL BARBER CLUB</h1>
+                        <p class="text-[10px] text-brand-greenLight font-bold flex items-center gap-1 mt-0.5">
+                            <span class="w-2 h-2 rounded-full bg-brand-green inline-block animate-pulse"></span>
+                            Online Booking (9:00 AM - 9:00 PM)
+                        </p>
+                    </div>
+                </div>
+                <!-- Secret Admin Access Trigger (No passwords/hints displayed) -->
+                <button onclick="openAdminModal()" class="w-9 h-9 rounded-xl bg-brand-cardLight hover:bg-brand-border flex items-center justify-center text-zinc-400 hover:text-brand-pink transition border border-brand-border" title="Admin Portal">
+                    <i class="fa-solid fa-user-lock text-xs"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Scrollable Content Area -->
+        <main id="appContent" class="flex-1 overflow-y-auto px-4 py-4 space-y-5 pb-24">
+            <!-- Dynamic DOM Rendering -->
+        </main>
+
+        <!-- Bottom Navigation Bar -->
+        <nav class="absolute bottom-0 left-0 right-0 bg-brand-dark/95 backdrop-blur-md border-t border-brand-border px-6 py-3 flex justify-around items-center z-20">
+            <button onclick="switchTab('booking')" id="navBookingBtn" class="flex flex-col items-center gap-1 text-brand-orange transition">
+                <i class="fa-solid fa-calendar-check text-lg"></i>
+                <span class="text-[10px] font-bold tracking-wider">BOOK NOW</span>
+            </button>
+            <button onclick="switchTab('myBookings')" id="navMyBookingsBtn" class="flex flex-col items-center gap-1 text-zinc-400 hover:text-brand-pink transition relative">
+                <i class="fa-solid fa-ticket text-lg"></i>
+                <span class="text-[10px] font-bold tracking-wider">MY TICKETS</span>
+                <span id="ticketBadge" class="hidden absolute -top-1 right-2 bg-brand-pink text-white font-extrabold text-[9px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- ADMIN LOGIN MODAL (Secret PIN: 7071) -->
+    <div id="adminModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-brand-card border border-brand-pink/40 w-full max-w-xs rounded-3xl p-5 shadow-2xl text-center space-y-4 relative pink-glow">
+            <button onclick="closeAdminModal()" class="absolute top-3 right-3 text-zinc-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            <div class="w-12 h-12 bg-brand-pink/20 rounded-full flex items-center justify-center mx-auto text-brand-pink border border-brand-pink/30">
+                <i class="fa-solid fa-lock text-lg"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-bold font-display tri-gradient-text">Admin Access</h3>
+                <p class="text-xs text-zinc-400 mt-0.5">Enter Passcode to view Dashboard</p>
+            </div>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-3">
+                <input type="password" id="adminPinInput" maxlength="8" placeholder="Enter Passcode" required autocomplete="off"
+                    class="w-full bg-brand-cardLight border border-brand-border text-center text-xl tracking-widest text-brand-pink font-bold rounded-xl py-2.5 focus:outline-none focus:border-brand-pink">
+                <div id="pinError" class="text-xs text-red-400 hidden font-medium">Incorrect Passcode! Access Denied.</div>
+                <button type="submit" class="w-full tri-button-gradient text-white font-extrabold py-2.5 rounded-xl transition text-xs tracking-wider">
+                    OPEN DASHBOARD
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TICKET RECEIPT & FORM SUBMISSION CONFIRMATION POPUP -->
+    <div id="ticketModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-gradient-to-b from-brand-cardLight via-brand-card to-brand-dark border border-brand-green/50 w-full max-w-sm rounded-3xl p-5 shadow-2xl relative text-gray-100 overflow-hidden green-glow">
+            <div id="ticketReceiptBody">
+                <!-- Dynamically populated confirmation popup content -->
+            </div>
+            <div class="mt-4 space-y-2">
+                <button onclick="copyTicketDetails()" class="w-full green-button-gradient text-white font-extrabold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-lg">
+                    <i class="fa-solid fa-copy"></i> Copy Booking & TID Details
+                </button>
+                <button onclick="closeTicketModal()" class="w-full bg-brand-cardLight hover:bg-brand-border text-zinc-300 font-medium py-2 rounded-xl text-xs transition border border-brand-border">
+                    Close Window
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION CODE -->
+    <script>
+        // CONFIGURATION
+        const ADMIN_PIN = "7071"; // Secret Admin Password
+
+        // ADMIN PAYMENT ACCOUNTS
+        const ADMIN_ACCOUNTS = {
+            jazzcash: { name: "JazzCash", number: "0300-1234567", title: "Royal Barber Shop / Admin" },
+            easypaisa: { name: "EasyPaisa", number: "0300-1234567", title: "Royal Barber Shop / Admin" },
+            bank: { name: "Meezan Bank", number: "PK00MEZN00012345678901", title: "Royal Barber Shop" }
+        };
+
+        const PRESET_SERVICES = [
+            { id: 'haircut', name: 'Haircut & Styling', urdu: 'ہیئر کٹ و اسٹائل', price: 100, duration: 30, icon: 'fa-scissors' },
+            { id: 'beard', name: 'Beard Trim & Shape', urdu: 'بیئرڈ ڈیزائننگ', price: 100, duration: 20, icon: 'fa-user' },
+            { id: 'combo', name: 'Royal Combo (Hair + Beard)', urdu: 'ہیئر اور بیئرڈ پیکج', price: 200, duration: 50, icon: 'fa-crown' },
+            { id: 'facial', name: 'Full Package / Facial', urdu: 'فل پیکج و فیشل', price: 300, duration: 25, icon: 'fa-sparkles' },
+            { id: 'custom', name: 'Custom Service / کسٹم سروس', urdu: 'اپنی مرضی کی سروس و پرائس', price: '', duration: 15, icon: 'fa-sliders' }
+        ];
+
+        // BARBERS LIST (No Chair Labels)
+        const BARBERS = [
+            { id: 'b1', name: 'Master Barber Ali', role: 'Senior Stylist', urdu: 'استاد علی - سینئر اسٹائلسٹ', rating: '4.9 ★' },
+            { id: 'b2', name: 'Stylist Usman', role: 'Master Barber', urdu: 'عثمان - ماسٹر باربر', rating: '4.8 ★' },
+            { id: 'b3', name: 'Senior Barber Hamza', role: 'Beard & Hair Specialist', urdu: 'حمزہ - ہیئر و بیئرڈ ایکسپرٹ', rating: '4.9 ★' }
+        ];
+
+        // STATE
+        let activeTab = 'booking'; 
+        let selectedDate = getTodayFormatted();
+        let selectedServiceId = PRESET_SERVICES[0].id;
+        let selectedBarber = BARBERS[0].id;
+
+        // Custom Service & Price State
+        let customServiceName = PRESET_SERVICES[0].name;
+        let customServicePrice = PRESET_SERVICES[0].price;
+
+        // Custom Time State
+        let startTime = '09:00';
+        let customDurationMins = PRESET_SERVICES[0].duration; 
+
+        let selectedPaymentMethod = 'jazzcash';
+        let isAdminLoggedIn = false;
+        let adminSearchQuery = '';
+
+        // HELPER UTILITIES FOR TIME CONVERSION (09:00 = 540 mins, 21:00 = 1260 mins)
+        function timeToMinutes(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.split(':');
+            return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+        }
+
+        function minutesToTime(mins) {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            const hStr = h < 10 ? '0' + h : '' + h;
+            const mStr = m < 10 ? '0' + m : '' + m;
+            return `${hStr}:${mStr}`;
+        }
+
+        function format12Hour(time24) {
+            if (!time24) return '';
+            let [h, m] = time24.split(':').map(Number);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12;
+            h = h ? h : 12;
+            const mStr = m < 10 ? '0' + m : m;
+            return `${h}:${mStr} ${ampm}`;
+        }
+
+        // LOCAL STORAGE HELPERS
+        function getStoredBookings() {
+            const data = localStorage.getItem('royal_barber_bookings');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveBookings(bookings) {
+            localStorage.setItem('royal_barber_bookings', JSON.stringify(bookings));
+        }
+
+        function getTodayFormatted() {
+            const today = new Date();
+            return today.toISOString().split('T')[0];
+        }
+
+        // INITIALIZATION
+        window.onload = function() {
+            renderApp();
+            updateTicketBadge();
+        };
+
+        // NAVIGATION SWITCH
+        function switchTab(tab) {
+            if (tab === 'admin' && !isAdminLoggedIn) {
+                openAdminModal();
+                return;
+            }
+            activeTab = tab;
+            renderApp();
+        }
+
+        function updateNavStyles() {
+            const navBookingBtn = document.getElementById('navBookingBtn');
+            const navMyBookingsBtn = document.getElementById('navMyBookingsBtn');
+
+            if (activeTab === 'booking') {
+                navBookingBtn.className = "flex flex-col items-center gap-1 text-brand-orange font-bold transition";
+                navMyBookingsBtn.className = "flex flex-col items-center gap-1 text-zinc-400 hover:text-brand-pink transition relative";
+            } else if (activeTab === 'myBookings') {
+                navBookingBtn.className = "flex flex-col items-center gap-1 text-zinc-400 hover:text-brand-orange transition";
+                navMyBookingsBtn.className = "flex flex-col items-center gap-1 text-brand-pink font-bold transition relative";
+            } else {
+                navBookingBtn.className = "flex flex-col items-center gap-1 text-zinc-400 hover:text-brand-orange transition";
+                navMyBookingsBtn.className = "flex flex-col items-center gap-1 text-zinc-400 hover:text-brand-pink transition relative";
+            }
+        }
+
+        function updateTicketBadge() {
+            const bookings = getStoredBookings();
+            const badge = document.getElementById('ticketBadge');
+            if (badge) {
+                if (bookings.length > 0) {
+                    badge.textContent = bookings.length;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+
+        // TIME COLLISION DETECTION (Prevents Overlapping Custom Bookings per Barber)
+        function checkTimeCollision(date, barberId, startMins, endMins) {
+            const bookings = getStoredBookings();
+            return bookings.some(b => {
+                if (b.date === date && b.barberId === barberId && b.status !== 'Cancelled') {
+                    const bStart = timeToMinutes(b.startTime);
+                    const bEnd = timeToMinutes(b.endTime);
+                    return (startMins < bEnd && endMins > bStart);
+                }
+                return false;
+            });
+        }
+
+        // MAIN ROUTER
+        function renderApp() {
+            const container = document.getElementById('appContent');
+            if (!container) return;
+
+            if (activeTab === 'booking') {
+                container.innerHTML = renderBookingTab();
+            } else if (activeTab === 'myBookings') {
+                container.innerHTML = renderMyBookingsTab();
+            } else if (activeTab === 'admin') {
+                container.innerHTML = renderAdminTab();
+            }
+            updateNavStyles();
+        }
+
+        // 1. CLIENT BOOKING VIEW
+        function renderBookingTab() {
+            const activeAcc = ADMIN_ACCOUNTS[selectedPaymentMethod];
+            
+            const startMins = timeToMinutes(startTime);
+            const endMins = startMins + parseInt(customDurationMins, 10);
+            const endTimeStr = minutesToTime(endMins);
+
+            // Boundary & Collision Checks
+            const isBefore9AM = startMins < 540; // 9:00 AM
+            const isAfter9PM = endMins > 1260;  // 9:00 PM
+            const isOutOfBounds = isBefore9AM || isAfter9PM;
+
+            const isColliding = checkTimeCollision(selectedDate, selectedBarber, startMins, endMins);
+
+            const displayPriceText = customServicePrice !== '' ? `RS ${customServicePrice}` : 'Unspecified';
+
+            return `
+                <!-- Date Picker -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-regular fa-calendar text-brand-orange"></i> Select Date / تاریخ
+                        </label>
+                        <span class="text-[10px] bg-brand-orange/10 text-brand-orange border border-brand-orange/30 px-2 py-0.5 rounded-full font-bold">9:00 AM - 9:00 PM</span>
+                    </div>
+                    <input type="date" value="${selectedDate}" min="${getTodayFormatted()}" onchange="onDateChange(this.value)" 
+                        class="w-full bg-brand-card border border-brand-border text-white font-semibold rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-orange text-xs">
+                </div>
+
+                <!-- Barber Selection (No Chairs) -->
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-tie text-brand-pink"></i> Choose Barber / باربر کا انتخاب
+                    </label>
+                    <div class="space-y-2">
+                        ${BARBERS.map(b => `
+                            <div onclick="selectBarber('${b.id}')" 
+                                class="p-3 rounded-2xl border transition cursor-pointer flex items-center justify-between ${selectedBarber === b.id ? 'bg-brand-cardLight border-brand-pink text-white shadow-md pink-glow' : 'bg-brand-card border-brand-border text-zinc-400 hover:border-zinc-700'}">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full ${selectedBarber === b.id ? 'bg-brand-pink text-white' : 'bg-brand-border text-brand-pink'} flex items-center justify-center font-bold text-sm">
+                                        <i class="fa-solid fa-scissors"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-gray-100">${b.name}</p>
+                                        <p class="text-[10px] text-zinc-400">${b.role} • <span class="text-brand-pinkLight font-semibold">${b.urdu}</span></p>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-brand-green bg-black/60 px-2 py-1 rounded-lg border border-brand-green/30">${b.rating}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Service Preset Cards -->
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-list-check text-brand-green"></i> Service Package / سروس کی فہرست
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        ${PRESET_SERVICES.map(s => `
+                            <div onclick="selectServicePreset('${s.id}')" class="p-3 rounded-2xl border transition cursor-pointer flex flex-col justify-between ${selectedServiceId === s.id ? 'bg-brand-cardLight border-brand-green text-white green-glow' : 'bg-brand-card border-brand-border text-zinc-400 hover:border-zinc-700'}">
+                                <div class="flex items-center justify-between mb-1">
+                                    <i class="fa-solid ${s.icon} text-brand-green text-xs"></i>
+                                    <span class="text-[11px] font-extrabold text-brand-greenLight">${s.price !== '' ? 'RS ' + s.price : 'Custom Price'}</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold leading-tight text-gray-200">${s.name}</p>
+                                    <p class="text-[10px] text-zinc-500 mt-0.5">${s.urdu}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- CUSTOM SERVICE NAME & PRICE INPUT BOX -->
+                <div class="bg-brand-card border border-brand-orange/40 rounded-2xl p-3.5 space-y-3 shadow-lg">
+                    <div class="flex items-center justify-between border-b border-brand-border pb-2">
+                        <h3 class="text-xs font-extrabold text-brand-orange uppercase tracking-wide flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen-to-square"></i> Custom Service & Price / کسٹم سروس و پرائس
+                        </h3>
+                        <span class="text-[10px] text-brand-greenLight font-bold"><i class="fa-solid fa-pen"></i> Editable</span>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <div>
+                            <label class="text-[10px] font-bold text-zinc-400 block mb-1">Service Title / سروس کا نام</label>
+                            <input type="text" value="${customServiceName}" onchange="updateCustomServiceName(this.value)" placeholder="Enter service description"
+                                class="w-full bg-brand-cardLight border border-brand-border text-brand-orangeLight font-bold rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-orange">
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] font-bold text-zinc-400 block mb-1">Service Price (RS) / سروس کی قیمت</label>
+                            <div class="flex items-center bg-brand-cardLight border border-brand-orange/50 rounded-xl px-3 py-1.5">
+                                <span class="text-brand-orange font-black text-xs mr-2">RS</span>
+                                <input type="number" min="0" max="50000" step="50" value="${customServicePrice}" oninput="updateCustomServicePrice(this.value)" placeholder="Enter Amount"
+                                    class="w-full bg-transparent text-brand-orangeLight font-extrabold text-sm focus:outline-none placeholder:text-zinc-600">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CUSTOM TIME DURATION & START TIME SELECTOR -->
+                <div class="bg-brand-card border border-brand-pink/30 rounded-2xl p-3.5 space-y-3">
+                    <div class="flex items-center justify-between border-b border-brand-border pb-2">
+                        <label class="text-xs font-extrabold text-brand-pink uppercase tracking-wide flex items-center gap-1.5">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Custom Time & Duration / وقت اور دورانیہ
+                        </label>
+                        <span class="text-[10px] bg-black text-brand-pink px-2 py-0.5 rounded font-bold border border-brand-pink/30">
+                            Min 10 Mins
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- Custom Start Time Picker -->
+                        <div>
+                            <label class="text-[10px] font-bold text-zinc-400 block mb-1">Start Time / شروع کا وقت</label>
+                            <input type="time" value="${startTime}" min="09:00" max="20:50" onchange="updateStartTime(this.value)" 
+                                class="w-full bg-brand-cardLight border border-brand-border text-brand-pink font-mono font-bold rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-pink">
+                        </div>
+
+                        <!-- Custom Duration Selection -->
+                        <div>
+                            <label class="text-[10px] font-bold text-zinc-400 block mb-1">Duration / دورانیہ</label>
+                            <div class="flex items-center bg-brand-cardLight border border-brand-border rounded-xl px-2 py-1">
+                                <input type="number" min="10" max="180" step="5" value="${customDurationMins}" onchange="updateDuration(this.value)"
+                                    class="w-full bg-transparent text-white font-bold font-mono text-xs focus:outline-none">
+                                <span class="text-[10px] font-bold text-zinc-400 ml-1">mins</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Duration Chips -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto pt-1 pb-1">
+                        <span class="text-[10px] font-bold text-zinc-500 shrink-0">Quick:</span>
+                        <button type="button" onclick="updateDuration(10)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${customDurationMins == 10 ? 'bg-brand-pink text-white' : 'bg-brand-cardLight text-zinc-300 border border-brand-border'}">10m</button>
+                        <button type="button" onclick="updateDuration(15)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${customDurationMins == 15 ? 'bg-brand-pink text-white' : 'bg-brand-cardLight text-zinc-300 border border-brand-border'}">15m</button>
+                        <button type="button" onclick="updateDuration(25)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${customDurationMins == 25 ? 'bg-brand-pink text-white' : 'bg-brand-cardLight text-zinc-300 border border-brand-border'}">25m</button>
+                        <button type="button" onclick="updateDuration(45)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${customDurationMins == 45 ? 'bg-brand-pink text-white' : 'bg-brand-cardLight text-zinc-300 border border-brand-border'}">45m</button>
+                        <button type="button" onclick="updateDuration(60)" class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${customDurationMins == 60 ? 'bg-brand-pink text-white' : 'bg-brand-cardLight text-zinc-300 border border-brand-border'}">60m</button>
+                    </div>
+
+                    <!-- Calculated Selected Span Summary -->
+                    <div class="bg-black/60 p-2.5 rounded-xl border border-brand-border flex items-center justify-between text-xs">
+                        <div>
+                            <p class="text-[10px] text-zinc-500 uppercase font-bold">Selected Span</p>
+                            <p class="font-bold text-brand-pinkLight">${format12Hour(startTime)} ➔ ${format12Hour(endTimeStr)}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-zinc-500 uppercase font-bold">Total Time</p>
+                            <p class="font-bold text-white">${customDurationMins} Minutes</p>
+                        </div>
+                    </div>
+
+                    <!-- Validation Alerts -->
+                    ${isOutOfBounds ? `
+                        <div class="bg-red-950/60 border border-red-800 text-red-300 text-[11px] p-2 rounded-xl font-medium text-center">
+                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> Shop hours are 9:00 AM to 9:00 PM only!
+                        </div>
+                    ` : ''}
+
+                    ${isColliding ? `
+                        <div class="bg-red-950/60 border border-red-800 text-red-300 text-[11px] p-2 rounded-xl font-medium text-center">
+                            <i class="fa-solid fa-circle-xmark mr-1"></i> Time Conflict! Selected Barber is already booked in this timeframe.
+                        </div>
+                    ` : ''}
+                </div>
+
+                <!-- CUSTOM PAYMENT & PAYMENT DETAILS -->
+                <div class="space-y-3 bg-brand-card p-4 rounded-2xl border border-brand-green/30 shadow-lg">
+                    <div class="flex items-center justify-between border-b border-brand-border pb-2">
+                        <h3 class="text-xs font-extrabold text-brand-green uppercase tracking-wide flex items-center gap-1.5">
+                            <i class="fa-solid fa-money-bill-transfer"></i> Payment Details / آن لائن ادائیگی
+                        </h3>
+                        <span class="text-[10px] text-zinc-400">Home Online Transfer</span>
+                    </div>
+
+                    <!-- Total Price Calculation Display -->
+                    <div class="bg-black/60 p-3 rounded-xl border border-brand-green/30 space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-zinc-400">Service Fee:</span>
+                            <span class="font-bold text-brand-greenLight">${displayPriceText}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs border-t border-brand-border pt-1.5">
+                            <span class="text-zinc-300 font-extrabold">Calculated Total Payment:</span>
+                            <span class="text-base font-black text-brand-green">${displayPriceText}</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Provider Options -->
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <button type="button" onclick="selectPaymentMethod('jazzcash')" class="py-2 rounded-xl text-xs font-bold border transition ${selectedPaymentMethod === 'jazzcash' ? 'bg-brand-green text-black border-brand-green' : 'bg-brand-cardLight border-brand-border text-zinc-300'}">
+                            JazzCash
+                        </button>
+                        <button type="button" onclick="selectPaymentMethod('easypaisa')" class="py-2 rounded-xl text-xs font-bold border transition ${selectedPaymentMethod === 'easypaisa' ? 'bg-brand-green text-black border-brand-green' : 'bg-brand-cardLight border-brand-border text-zinc-300'}">
+                            EasyPaisa
+                        </button>
+                        <button type="button" onclick="selectPaymentMethod('bank')" class="py-2 rounded-xl text-xs font-bold border transition ${selectedPaymentMethod === 'bank' ? 'bg-brand-green text-black border-brand-green' : 'bg-brand-cardLight border-brand-border text-zinc-300'}">
+                            Meezan Bank
+                        </button>
+                    </div>
+
+                    <!-- Selected Admin Payment Account Details -->
+                    <div class="bg-black/60 p-3 rounded-xl border border-brand-border space-y-1.5 text-xs">
+                        <div class="flex justify-between items-center text-zinc-400">
+                            <span>Admin Account:</span>
+                            <span class="font-bold text-brand-green">${activeAcc.name}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-zinc-400">Account No:</span>
+                            <span class="font-mono font-bold text-white text-xs tracking-wider select-all">${activeAcc.number}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-zinc-400">
+                            <span>Account Title:</span>
+                            <span class="font-semibold text-zinc-200">${activeAcc.title}</span>
+                        </div>
+                    </div>
+
+                    <!-- Form for Client Info & TID -->
+                    <form onsubmit="handleBookingSubmit(event)" class="space-y-3 pt-1">
+                        <div>
+                            <input type="text" id="custName" placeholder="Your Full Name (آپ کا نام)" required
+                                class="w-full bg-brand-cardLight border border-brand-border text-xs rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-brand-green placeholder:text-zinc-500">
+                        </div>
+                        <div>
+                            <input type="tel" id="custPhone" placeholder="Mobile Number (03XX-XXXXXXX)" required pattern="[0-9]{11}" title="Please enter valid 11 digit mobile number"
+                                class="w-full bg-brand-cardLight border border-brand-border text-xs rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-brand-green placeholder:text-zinc-500">
+                        </div>
+                        <div>
+                            <input type="text" id="paymentTid" placeholder="Transaction ID (TID) / ٹرانزیکشن نمبر" required
+                                class="w-full bg-brand-cardLight border border-brand-green/40 text-xs font-mono tracking-wide rounded-xl px-3.5 py-2.5 text-brand-greenLight focus:outline-none focus:border-brand-green placeholder:text-zinc-500 placeholder:font-sans">
+                        </div>
+
+                        <button type="submit" ${isOutOfBounds || isColliding ? 'disabled' : ''} 
+                            class="w-full py-3 rounded-xl font-extrabold text-xs tracking-wider transition shadow-lg flex items-center justify-center gap-2 ${!isOutOfBounds && !isColliding ? 'tri-button-gradient text-white cursor-pointer orange-glow' : 'bg-brand-border text-zinc-500 cursor-not-allowed'}">
+                            <i class="fa-solid fa-paper-plane"></i> CONFIRM BOOKING & SUBMIT
+                        </button>
+                    </form>
+                </div>
+            `;
+        }
+
+        // 2. MY TICKETS VIEW
+        function renderMyBookingsTab() {
+            const bookings = getStoredBookings();
+
+            if (bookings.length === 0) {
+                return `
+                    <div class="text-center py-16 space-y-3">
+                        <div class="w-16 h-16 bg-brand-card rounded-full flex items-center justify-center mx-auto text-zinc-600 border border-brand-border">
+                            <i class="fa-solid fa-ticket text-2xl text-brand-pink/40"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-zinc-300 font-display">No Active Tickets</h3>
+                        <p class="text-xs text-zinc-500 max-w-xs mx-auto">آپ کی کوئی بھی بُکنگ موجود نہیں ہے۔ ابھی اپنی پسندیدہ سلاٹ اور باربر بُک کریں۔</p>
+                        <button onclick="switchTab('booking')" class="mt-2 tri-button-gradient text-white font-bold text-xs px-5 py-2.5 rounded-xl transition">
+                            Book Slot Now
+                        </button>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Your Booking Tickets (${bookings.length})</h2>
+                        <span class="text-[10px] text-zinc-500">Saved on Device</span>
+                    </div>
+
+                    ${bookings.map(b => `
+                        <div class="bg-brand-card border border-brand-border hover:border-brand-pink/50 rounded-2xl p-4 space-y-3 relative overflow-hidden transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] font-extrabold text-brand-pink bg-brand-pink/10 px-2 py-0.5 rounded border border-brand-pink/30">${b.pnr}</span>
+                                    <h3 class="text-sm font-bold text-white mt-1.5">${b.serviceName}</h3>
+                                    <p class="text-xs text-zinc-400"><i class="fa-solid fa-user-tie text-brand-orange mr-1"></i> ${b.barberName}</p>
+                                </div>
+                                <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full ${b.status === 'Confirmed' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}">
+                                    ${b.status}
+                                </span>
+                            </div>
+
+                            <div class="bg-black/50 rounded-xl p-2.5 flex justify-between items-center text-xs border border-brand-border">
+                                <div>
+                                    <p class="text-[10px] text-zinc-500">TIME & DURATION</p>
+                                    <p class="font-bold text-gray-200">${b.date} (${format12Hour(b.startTime)} - ${format12Hour(b.endTime)})</p>
+                                    <p class="text-[10px] text-brand-pink font-medium">${b.duration} Minutes Session</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-zinc-500">TOTAL AMOUNT</p>
+                                    <p class="font-bold text-brand-green">${b.amount ? 'RS ' + b.amount : 'Custom'}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-center pt-1 text-xs">
+                                <span class="text-zinc-400 text-[11px]"><strong class="text-zinc-200">TID:</strong> ${b.paymentTid}</span>
+                                <button onclick="viewTicketReceipt('${b.pnr}')" class="text-brand-orange hover:underline text-xs font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-receipt"></i> View Status
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // 3. ADMIN DASHBOARD VIEW (PIN 7071)
+        function renderAdminTab() {
+            let bookings = getStoredBookings();
+            
+            // Search Filtering
+            if (adminSearchQuery.trim() !== '') {
+                const q = adminSearchQuery.toLowerCase();
+                bookings = bookings.filter(b => 
+                    b.customerName.toLowerCase().includes(q) ||
+                    b.customerPhone.includes(q) ||
+                    b.pnr.toLowerCase().includes(q) ||
+                    b.paymentTid.toLowerCase().includes(q)
+                );
+            }
+
+            const totalRevenue = bookings.reduce((sum, b) => b.status === 'Confirmed' ? sum + Number(b.amount || 0) : sum, 0);
+            const pendingCount = bookings.filter(b => b.status === 'Verification Pending').length;
+
+            return `
+                <div class="space-y-4">
+                    <!-- Dashboard Control Header -->
+                    <div class="bg-gradient-to-r from-brand-cardLight via-brand-card to-brand-card p-3.5 rounded-2xl border border-brand-pink/30 flex items-center justify-between">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-shield-halved text-brand-pink text-sm"></i>
+                                <h2 class="text-xs font-bold font-display tri-gradient-text uppercase tracking-wider">Admin Dashboard</h2>
+                            </div>
+                            <p class="text-[11px] text-zinc-400">Custom prices, custom times & TID approval</p>
+                        </div>
+                        <button onclick="logoutAdmin()" class="bg-brand-cardLight hover:bg-brand-border text-zinc-300 text-xs px-3 py-1.5 rounded-lg border border-brand-border transition">
+                            Logout
+                        </button>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div>
+                        <input type="text" value="${adminSearchQuery}" oninput="updateAdminSearch(this.value)" placeholder="Search by Name, Phone, PNR or TID..."
+                            class="w-full bg-brand-card border border-brand-border text-xs text-brand-orangeLight rounded-xl px-3.5 py-2 focus:outline-none focus:border-brand-orange">
+                    </div>
+
+                    <!-- Key Business Stats -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-brand-card p-2.5 rounded-2xl border border-brand-border text-center">
+                            <p class="text-[9px] text-zinc-500 uppercase font-bold">Total Bookings</p>
+                            <p class="text-lg font-black text-white mt-0.5">${bookings.length}</p>
+                        </div>
+                        <div class="bg-brand-card p-2.5 rounded-2xl border border-brand-border text-center">
+                            <p class="text-[9px] text-brand-orange uppercase font-bold">Pending TID</p>
+                            <p class="text-lg font-black text-brand-orange mt-0.5">${pendingCount}</p>
+                        </div>
+                        <div class="bg-brand-card p-2.5 rounded-2xl border border-brand-border text-center">
+                            <p class="text-[9px] text-brand-green uppercase font-bold">Revenue RS</p>
+                            <p class="text-lg font-black text-brand-green mt-0.5">${totalRevenue}</p>
+                        </div>
+                    </div>
+
+                    <!-- Client Bookings List -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Manage Appointments</h3>
+                            <button onclick="clearAllData()" class="text-[10px] text-red-400 hover:underline">Reset System Slots</button>
+                        </div>
+
+                        ${bookings.length === 0 ? `
+                            <div class="text-center py-8 text-zinc-500 text-xs bg-brand-card rounded-2xl border border-brand-border">
+                                No matching appointments found.
+                            </div>
+                        ` : `
+                            <div class="space-y-2.5">
+                                ${bookings.map(b => `
+                                    <div class="bg-brand-card border border-brand-border rounded-xl p-3 space-y-2 text-xs">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <span class="font-bold text-white text-sm">${b.customerName}</span>
+                                                <p class="text-xs text-brand-orange font-medium">${b.customerPhone}</p>
+                                            </div>
+                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${b.status === 'Confirmed' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}">
+                                                ${b.status}
+                                            </span>
+                                        </div>
+
+                                        <div class="bg-black/50 p-2.5 rounded-lg border border-brand-border space-y-1 text-[11px]">
+                                            <div class="flex justify-between">
+                                                <span class="text-zinc-400">Service: <strong class="text-white">${b.serviceName}</strong></span>
+                                                <span class="text-zinc-400">${b.date}</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-zinc-400">Barber: <strong class="text-zinc-200">${b.barberName}</strong></span>
+                                                <span class="font-bold text-brand-green">${b.amount ? 'RS ' + b.amount : 'Custom'}</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-zinc-400">Time: <strong class="text-brand-pink">${format12Hour(b.startTime)} - ${format12Hour(b.endTime)} (${b.duration}m)</strong></span>
+                                                <span class="text-brand-orangeLight font-mono font-bold">TID: ${b.paymentTid}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex justify-between items-center pt-1">
+                                            <span class="text-[10px] text-zinc-500">PNR: ${b.pnr}</span>
+                                            <div class="flex gap-1.5">
+                                                ${b.status !== 'Confirmed' ? `
+                                                    <button onclick="confirmPaymentStatus('${b.pnr}')" class="bg-emerald-900/40 hover:bg-emerald-800/60 text-emerald-300 border border-emerald-700/60 px-2.5 py-1 rounded text-[10px] font-bold transition">
+                                                        <i class="fa-solid fa-check mr-1"></i> Approve
+                                                    </button>
+                                                ` : ''}
+                                                <button onclick="deleteBooking('${b.pnr}')" class="bg-red-900/30 hover:bg-red-800/50 text-red-400 border border-red-800/50 px-2 py-1 rounded text-[10px] font-bold transition">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        // CUSTOM PRICE & SERVICE HANDLERS
+        function selectServicePreset(id) {
+            selectedServiceId = id;
+            const serv = PRESET_SERVICES.find(s => s.id === id);
+            if (serv) {
+                customServiceName = serv.name;
+                customServicePrice = serv.price; // Set to empty string for custom service
+                customDurationMins = serv.duration;
+            }
+            renderApp();
+        }
+
+        function updateCustomServiceName(name) {
+            customServiceName = name;
+            renderApp();
+        }
+
+        function updateCustomServicePrice(price) {
+            customServicePrice = price === '' ? '' : (parseInt(price, 10) || 0);
+            renderApp();
+        }
+
+        function selectBarber(id) {
+            selectedBarber = id;
+            renderApp();
+        }
+
+        function updateStartTime(val) {
+            startTime = val;
+            renderApp();
+        }
+
+        function updateDuration(val) {
+            customDurationMins = Math.max(10, parseInt(val, 10) || 10);
+            renderApp();
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            renderApp();
+        }
+
+        function onDateChange(newDate) {
+            selectedDate = newDate;
+            renderApp();
+        }
+
+        function updateAdminSearch(query) {
+            adminSearchQuery = query;
+            renderApp();
+        }
+
+        // SUBMISSION WITH OVERLAP PREVENTION & CONFIRMATION POPUP
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const tid = document.getElementById('paymentTid').value.trim();
+
+            const startMins = timeToMinutes(startTime);
+            const endMins = startMins + parseInt(customDurationMins, 10);
+            const endTimeStr = minutesToTime(endMins);
+
+            if (startMins < 540 || endMins > 1260) {
+                alert('Booking must be between 9:00 AM and 9:00 PM!');
+                return;
+            }
+
+            if (checkTimeCollision(selectedDate, selectedBarber, startMins, endMins)) {
+                alert('Selected barber already has an overlapping appointment in this time frame!');
+                return;
+            }
+
+            const barberObj = BARBERS.find(b => b.id === selectedBarber);
+            const pnrCode = 'RBS-' + Math.floor(100000 + Math.random() * 900000);
+
+            const newBooking = {
+                pnr: pnrCode,
+                date: selectedDate,
+                startTime: startTime,
+                endTime: endTimeStr,
+                duration: customDurationMins,
+                serviceName: customServiceName || 'Custom Service',
+                amount: customServicePrice,
+                barberId: selectedBarber,
+                barberName: barberObj ? barberObj.name : 'Master Barber',
+                customerName: name,
+                customerPhone: phone,
+                paymentMethod: selectedPaymentMethod,
+                paymentTid: tid,
+                status: 'Verification Pending',
+                createdAt: new Date().toISOString()
+            };
+
+            const bookings = getStoredBookings();
+            bookings.unshift(newBooking);
+            saveBookings(bookings);
+
+            updateTicketBadge();
+            viewTicketReceipt(pnrCode);
+            renderApp();
+        }
+
+        // SHOW TICKET RECEIPT & FORM SUBMISSION CONFIRMATION POPUP
+        function viewTicketReceipt(pnr) {
+            const bookings = getStoredBookings();
+            const b = bookings.find(item => item.pnr === pnr);
+            if (!b) return;
+
+            const ticketBody = document.getElementById('ticketReceiptBody');
+            ticketBody.innerHTML = `
+                <!-- SUCCESS SUBMISSION BANNER -->
+                <div class="text-center space-y-2 pb-3 border-b border-dashed border-brand-border">
+                    <div class="w-12 h-12 bg-brand-green/20 text-brand-green rounded-full flex items-center justify-center mx-auto border border-brand-green/30 animate-bounce">
+                        <i class="fa-solid fa-circle-check text-2xl"></i>
+                    </div>
+                    <div class="bg-brand-green/10 border border-brand-green/30 text-brand-greenLight font-extrabold text-[11px] px-3 py-1 rounded-xl">
+                        Your details are submitted! Please wait for approval of admin.
+                    </div>
+                    <p class="text-[11px] text-zinc-400">آپ کی تفصیلات جمع کر دی گئی ہیں! براہ کرم ایڈمن کی منظوری کا انتظار کریں۔</p>
+                </div>
+
+                <div class="py-3 space-y-2.5">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-zinc-500">TICKET PNR:</span>
+                        <span class="font-mono font-black text-brand-orange text-sm">${b.pnr}</span>
+                    </div>
+
+                    <div class="bg-brand-card p-2.5 rounded-xl border border-brand-border space-y-1.5 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">Client Name:</span>
+                            <span class="font-bold text-white">${b.customerName} (${b.customerPhone})</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">Barber:</span>
+                            <span class="font-bold text-brand-pink">${b.barberName}</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="bg-brand-card p-2 rounded-xl border border-brand-border">
+                            <span class="text-[9px] text-zinc-500 block">DATE</span>
+                            <span class="font-bold text-white text-xs">${b.date}</span>
+                        </div>
+                        <div class="bg-brand-card p-2 rounded-xl border border-brand-border">
+                            <span class="text-[9px] text-zinc-500 block">TIME & DURATION</span>
+                            <span class="font-bold text-brand-orange text-xs">${format12Hour(b.startTime)} (${b.duration}m)</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-card p-2.5 rounded-xl border border-brand-border space-y-1 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">Selected Service:</span>
+                            <span class="font-bold text-white">${b.serviceName}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">Payment Method:</span>
+                            <span class="font-bold text-zinc-200 uppercase">${b.paymentMethod}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">Transaction TID:</span>
+                            <span class="font-mono font-bold text-brand-orangeLight">${b.paymentTid}</span>
+                        </div>
+                        <div class="flex justify-between pt-1 border-t border-brand-border font-bold">
+                            <span class="text-zinc-300">Total Price:</span>
+                            <span class="text-brand-green">${b.amount ? 'RS ' + b.amount : 'Custom'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center pt-1">
+                    <span class="text-[10px] text-brand-greenLight font-medium">ایڈمن کی منظوری کے بعد آپ کی بُکنگ پکی ہو جائے گی۔</span>
+                </div>
+            `;
+
+            document.getElementById('ticketModal').classList.remove('hidden');
+        }
+
+        function closeTicketModal() {
+            document.getElementById('ticketModal').classList.add('hidden');
+        }
+
+        function copyTicketDetails() {
+            alert('Ticket & TID details copied!');
+        }
+
+        // ADMIN ACCESS CONTROLS (Passcode `7071`)
+        function openAdminModal() {
+            if (isAdminLoggedIn) {
+                switchTab('admin');
+                return;
+            }
+            document.getElementById('adminModal').classList.remove('hidden');
+            document.getElementById('adminPinInput').focus();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+            document.getElementById('pinError').classList.add('hidden');
+            document.getElementById('adminPinInput').value = '';
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('adminPinInput').value.trim();
+            if (pin === ADMIN_PIN) {
+                isAdminLoggedIn = true;
+                closeAdminModal();
+                switchTab('admin');
+            } else {
+                document.getElementById('pinError').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            switchTab('booking');
+        }
+
+        function confirmPaymentStatus(pnr) {
+            let bookings = getStoredBookings();
+            const idx = bookings.findIndex(b => b.pnr === pnr);
+            if (idx !== -1) {
+                bookings[idx].status = 'Confirmed';
+                saveBookings(bookings);
+                renderApp();
+            }
+        }
+
+        function deleteBooking(pnr) {
+            if (confirm(`Cancel booking ${pnr}?`)) {
+                let bookings = getStoredBookings();
+                bookings = bookings.filter(b => b.pnr !== pnr);
+                saveBookings(bookings);
+                updateTicketBadge();
+                renderApp();
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('Clear all system bookings and slots?')) {
+                localStorage.removeItem('royal_barber_bookings');
+                updateTicketBadge();
+                renderApp();
+            }
+        }
+    </script>
+</body>
+</html>
